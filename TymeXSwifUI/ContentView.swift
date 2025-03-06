@@ -20,5 +20,8 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    let userRepository = UserRepository()
+    let service = UserService(userRepository: userRepository)
+    let viewModel = HomeViewModel(service: service)
+    Home(viewModel: viewModel)
 }
