@@ -8,42 +8,57 @@ import Foundation
 import Combine
 
 protocol UserRepositoryProtocol {
-    func listUsers() async throws -> [User]
+    func listUsers(_ params: Parameters) async throws -> [User]
     func getUser(name: String) async throws -> User
-    func listUsersReturnAnyPublisher() -> AnyPublisher<[User], APIError>
+    func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<[User], APIError>
     func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
 }
 
 class UserRepository: UserRepositoryProtocol {
     
-    func listUsersReturnAnyPublisher() -> AnyPublisher<[User], APIError> {
-        return APIClient.shared.requestReturnAnyPublisher(endPoint: UserUrl.listUser)
+    private let apiRepository: APIRepository
+    
+    init(apiRepository: APIRepository) {
+        self.apiRepository = apiRepository
+    }
+    
+    func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<[User], APIError> {
+        return apiRepository.request(endPoint: UserUrl.listUser(params))
     }
     
     func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {
-        return APIClient.shared.requestReturnAnyPublisher(endPoint: UserUrl.getUser(name: name))
+        return apiRepository.request(endPoint: UserUrl.getUser(name: name))
     }
     
-    func listUsers() async throws -> [User] {
-        return try await APIClient.shared.request(endPoint: UserUrl.listUser)
+    func listUsers(_ params: Parameters) async throws -> [User] {
+        return try await apiRepository.request(endPoint: UserUrl.listUser(params))
     }
     
     func getUser(name: String) async throws -> User {
-        return try await APIClient.shared.request(endPoint: UserUrl.getUser(name: name))
+        return try await apiRepository.request(endPoint: UserUrl.getUser(name: name))
     }
 }
 
 extension UserRepository {
     enum UserUrl {
-        case listUser
+        case listUser(Parameters?)
         case getUser(name: String)
     }
 }
 
 extension UserRepository.UserUrl: APIRequest {
+    var parameters: [String : Any]? {
+        switch self {
+        case .listUser(let request):
+            return request?.toDictionary()
+        case .getUser:
+            return nil
+        }
+    }
+    
     var path: String {
         switch self {
-            case .listUser:
+        case .listUser:
             return "/users"
         case .getUser(let name):
             let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)

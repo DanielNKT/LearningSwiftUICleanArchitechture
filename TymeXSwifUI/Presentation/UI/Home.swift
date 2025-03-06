@@ -7,8 +7,12 @@
 import SwiftUI
 
 struct Home: View {
-    @State private var path = NavigationPath()
+    @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var viewModel: HomeViewModel
+    
+    @State var since: Int = 0
+    @State var perPage: Int = 20
+    
     
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -21,27 +25,20 @@ struct Home: View {
             } else if let errorMessage = viewModel.errorMessage {
                 failedView(errorMessage)
             } else {
-                NavigationStack(path: $path)  {
+                NavigationStack(path: $coordinator.path)  {
                     List(viewModel.users) { user in
                         UserRow(user: user).listRowSeparator(.hidden)
                             .onTapGesture {
-                                path.append(user)
+                                coordinator.push(.detail(user.login ?? ""))
                             }
                     }
                     .listStyle(.plain)
-                    .navigationDestination(for: String.self) { item in
-                        UserDetail()
-                    }
                     .navigationTitle("Github Users")
                     .navigationBarTitleDisplayMode(.inline)
                 }
                 .onAppear {
-//                    Task {
-//                        await viewModel.fetchUsers()
-//                    }
-                    if !viewModel.hasLoaded {
+                    if viewModel.users.isEmpty {
                         viewModel.fetchUsers()
-                        viewModel.hasLoaded = true
                     }
                     
                 }
@@ -59,9 +56,6 @@ private extension Home {
 
     func failedView(_ errorMessage: String) -> some View {
         ErrorView(errorMessage: errorMessage, retryAction: {
-//            Task {
-//                await viewModel.fetchUsers()
-//            }
             viewModel.fetchUsers()
         })
     }

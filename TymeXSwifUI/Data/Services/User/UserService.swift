@@ -8,9 +8,9 @@ import Foundation
 import Combine
 
 protocol UserServiceProtocol {
-    func fetchListUser() async throws -> [User]
+    func fetchListUser(params: UserListRequest) async throws -> [User]
     func fetchDetailUser(name: String) async throws -> User
-    func fetchListUserReturnAnyPublisher() -> AnyPublisher<[User], APIError>
+    func fetchListUserReturnAnyPublisher(params: UserListRequest) -> AnyPublisher<[User], APIError>
     func fetchDetailUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
 }
 
@@ -22,16 +22,16 @@ struct UserService: UserServiceProtocol {
         self.userRepository = userRepository
     }
     
-    func fetchListUser() async throws -> [User] {
-        return try await userRepository.listUsers()
+    func fetchListUser(params: UserListRequest) async throws -> [User] {
+        return try await userRepository.listUsers(params)
     }
     
     func fetchDetailUser(name: String) async throws -> User {
         return try await userRepository.getUser(name: name)
     }
     
-    func fetchListUserReturnAnyPublisher() -> AnyPublisher<[User], APIError> {
-        return userRepository.listUsersReturnAnyPublisher()
+    func fetchListUserReturnAnyPublisher(params: UserListRequest) -> AnyPublisher<[User], APIError> {
+        return userRepository.listUsersReturnAnyPublisher(params)
     }
     
     func fetchDetailUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {

@@ -11,10 +11,7 @@ import SwiftUI
 struct TymeXSwifUIApp: App {
     var body: some Scene {
         WindowGroup {
-            let userRepository = UserRepository()
-            let service = UserService(userRepository: userRepository)
-            let viewModel = HomeViewModel(service: service)
-            Home(viewModel: viewModel)
+            ContentView()
         }
     }
 }

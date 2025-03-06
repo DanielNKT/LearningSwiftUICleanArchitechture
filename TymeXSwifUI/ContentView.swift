@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var coordinator = AppCoordinator()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $coordinator.path) {
+            coordinator.view(for: .home)
+                .navigationDestination(for: AppCoordinator.DestinationType.self) { destination in
+                    coordinator.view(for: destination)
+                }
         }
-        .padding()
+        .environmentObject(coordinator)
     }
 }
 
 #Preview {
-    let userRepository = UserRepository()
+    let apiRepository = APIRepository()
+    let userRepository = UserRepository(apiRepository: apiRepository)
     let service = UserService(userRepository: userRepository)
     let viewModel = HomeViewModel(service: service)
     Home(viewModel: viewModel)

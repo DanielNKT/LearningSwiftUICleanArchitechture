@@ -1,42 +1,29 @@
 //
-//  HomeViewModel.swift
+//  UserDetailViewModel.swift
 //  TymeXSwifUI
 //
-//  Created by Bé Gạo on 5/3/25.
+//  Created by Bé Gạo on 6/3/25.
 //
 import Foundation
 import Combine
 
-class HomeViewModel: ObservableObject {
+class UserDetailViewModel: ObservableObject {
     @Published var hasLoaded = false
-    @Published var users: [User] = []
+    @Published var user: User? = nil
+    @Published var userName: String
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    
     private let service: UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(service: UserServiceProtocol) {
+    init(service: UserServiceProtocol, userName: String) {
         self.service = service
+        self.userName = userName
     }
     
-//    func fetchUsers() {
-        //        do {
-        //            let users = try await service.fetchListUser()
-        //            await updateUserList(users: users)
-        //            await updateLoadingState(isLoading: false)
-        //        } catch {
-        //            await updateLoadingState(isLoading: false)
-        //            await updateErrorMessage(message: error.localizedDescription)
-        //        }
-//    }
-    func fetchUsers(perPage: Int = 20, page: Int = 0) {
+    func fetchUsers() {
         self.isLoading = true
-        let params = UserListRequest()
-        params.per_page = perPage
-        params.since = page
-        
-        service.fetchListUserReturnAnyPublisher(params: params)
+        service.fetchDetailUserReturnAnyPublisher(name: self.userName)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -46,17 +33,17 @@ class HomeViewModel: ObservableObject {
                 case .finished:
                     break
                 }
-            }, receiveValue: { (users: [User]) in
+            }, receiveValue: { (user: User) in
                 self.isLoading = false
-                self.users.append(contentsOf: users)
+                self.user = user
             })
             .store(in: &cancellables)
         
     }
     
     @MainActor
-    private func updateUserList(users: [User]){
-        self.users = users
+    private func updateUserList(users: User){
+        self.user = user
     }
     
     @MainActor

@@ -10,11 +10,19 @@ struct UserRow: View {
     let user: User
     var body: some View {
         HStack(alignment: .top) {
-            Image(systemName: "person")
-                .resizable()
-                .frame(width: 80, height: 80)
-                .background(Circle().fill(Color.gray))
-                .clipShape(Circle())
+            if let urlString = user.avatarURL, let url = URL(string: urlString){
+                CachedAsyncImage(url: url)
+                    .frame(width: 80, height: 80)
+                    .background(Circle().fill(Color.gray))
+                    .clipShape(Circle())
+            } else {
+                Image(systemName: "person")
+                    .resizable()
+                    .frame(width: 80, height: 80)
+                    .background(Circle().fill(Color.gray))
+                    .clipShape(Circle())
+            }
+            
             VStack(alignment: .leading) {
                 Text(user.login ?? "unknown")
                     .font(.system(size: 16, weight: .bold, design: .rounded))
@@ -30,7 +38,8 @@ struct UserRow: View {
         .padding(.horizontal, 8)
         .background(Rectangle().fill(Color.white))
         .cornerRadius(10)
-        .shadow(color: .gray.opacity(0.3), radius: 3, x: 2, y: 2)
+        .shadow(color: .gray, radius: 3, x: 2, y: 2)
         .listRowInsets(EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24))
     }
 }
+

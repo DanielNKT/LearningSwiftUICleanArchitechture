@@ -9,6 +9,7 @@ import Combine
 
 protocol APIRequest {
     var path: String { get }
+    var parameters: [String : Any]? { get }
     var method: String { get }
     var headers: [String: String]? { get }
     func body() throws -> Data?
@@ -21,6 +22,9 @@ extension APIRequest {
         }
         var request = URLRequest(url: url)
         request.httpMethod = method
+        if let params = parameters {
+            request.addParameters(params, method: method)
+        }
         headers?.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)
         }
@@ -31,8 +35,7 @@ extension APIRequest {
     }
 }
 
-class APIClient {
-    static let shared = APIClient()
+class APIRepository {
     private let session: URLSession
     
     private static func configuredURLSession() -> URLSession {
@@ -46,8 +49,8 @@ class APIClient {
         return URLSession(configuration: configuration)
     }
     
-    private init(session: URLSession = configuredURLSession()) {
-            self.session = session
+    init(session: URLSession = configuredURLSession()) {
+        self.session = session
     }
     
     func request<T: Decodable>(
@@ -69,32 +72,32 @@ class APIClient {
             throw APIError.unexpectedResponse
         }
     }
-    func requestReturnAnyPublisher<T: Decodable>(
-            endPoint: APIRequest,
-            httpCodes: HTTPCodes = .success
-        ) -> AnyPublisher<T, APIError> {
-            do {
-                let request = try endPoint.urlRequest()
-
-                return session.dataTaskPublisher(for: request)
-                    .tryMap { data, response in
-                        guard let httpResponse = response as? HTTPURLResponse else {
-                            throw APIError.unexpectedResponse
-                        }
-                        guard httpCodes.contains(httpResponse.statusCode) else {
-                            throw APIError.serverError(httpResponse.statusCode)
-                        }
-                        return data
+    func request<T: Decodable>(
+        endPoint: APIRequest,
+        httpCodes: HTTPCodes = .success
+    ) -> AnyPublisher<T, APIError> {
+        do {
+            let request = try endPoint.urlRequest()
+            
+            return session.dataTaskPublisher(for: request)
+                .tryMap { data, response in
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw APIError.unexpectedResponse
                     }
-                    .decode(type: T.self, decoder: JSONDecoder())
-                    .mapError { error in
-                        return error is DecodingError ? APIError.unexpectedResponse : APIError.networkError(error)
+                    guard httpCodes.contains(httpResponse.statusCode) else {
+                        throw APIError.serverError(httpResponse.statusCode)
                     }
-                    .eraseToAnyPublisher()
-            } catch {
-                return Fail(error: APIError.invalidRequest(error))
-                    .eraseToAnyPublisher()
-            }
+                    return data
+                }
+                .decode(type: T.self, decoder: JSONDecoder())
+                .mapError { error in
+                    return error is DecodingError ? APIError.unexpectedResponse : APIError.networkError(error)
+                }
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: APIError.invalidRequest(error))
+                .eraseToAnyPublisher()
         }
+    }
 }
 

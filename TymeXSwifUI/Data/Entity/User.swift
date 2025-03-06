@@ -30,7 +30,7 @@ struct User: Codable, Identifiable, Hashable {
     let bio: String?
     let twitterUsername: String? = ""
     let publicRepos, publicGists, followers, following: Int?
-    let createdAt, updatedAt: Date?
+    let createdAt, updatedAt: String?
 
     enum CodingKeys: String, CodingKey {
         case login, id

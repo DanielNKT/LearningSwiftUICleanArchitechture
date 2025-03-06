@@ -7,6 +7,5 @@
 import Foundation
 
 struct AppEnviroment {
-    let session: URLSession
     static let baseURL: String = "https://api.github.com"
 }
