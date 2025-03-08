@@ -20,11 +20,3 @@ struct ContentView: View {
         .environmentObject(coordinator)
     }
 }
-
-#Preview {
-    let apiRepository = APIRepository()
-    let userRepository = UserRepository(apiRepository: apiRepository)
-    let service = UserService(userRepository: userRepository)
-    let viewModel = HomeViewModel(service: service)
-    Home(viewModel: viewModel)
-}

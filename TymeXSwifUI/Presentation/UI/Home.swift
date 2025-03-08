@@ -13,19 +13,18 @@ struct Home: View {
     @State var since: Int = 0
     @State var perPage: Int = 20
     
-    
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         Group {
-            if viewModel.isLoading {
-                loadingView()
-            } else if let errorMessage = viewModel.errorMessage {
-                failedView(errorMessage)
-            } else {
-                NavigationStack(path: $coordinator.path)  {
+            NavigationStack(path: $coordinator.path)  {
+                if viewModel.isLoading {
+                    loadingView()
+                } else if let errorMessage = viewModel.errorMessage {
+                    failedView(errorMessage)
+                } else {
                     List(viewModel.users) { user in
                         UserRow(user: user).listRowSeparator(.hidden)
                             .onTapGesture {
@@ -33,18 +32,16 @@ struct Home: View {
                             }
                     }
                     .listStyle(.plain)
-                    .navigationTitle("Github Users")
-                    .navigationBarTitleDisplayMode(.inline)
                 }
-                .onAppear {
-                    if viewModel.users.isEmpty {
-                        viewModel.fetchUsers()
-                    }
-                    
+            }
+            .navigationTitle("Github Users")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                if viewModel.users.isEmpty {
+                    viewModel.fetchUsers()
                 }
             }
         }
-        
     }
 }
 
@@ -53,7 +50,7 @@ private extension Home {
         ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
     }
-
+    
     func failedView(_ errorMessage: String) -> some View {
         ErrorView(errorMessage: errorMessage, retryAction: {
             viewModel.fetchUsers()

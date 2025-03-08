@@ -20,16 +20,6 @@ class HomeViewModel: ObservableObject {
         self.service = service
     }
     
-//    func fetchUsers() {
-        //        do {
-        //            let users = try await service.fetchListUser()
-        //            await updateUserList(users: users)
-        //            await updateLoadingState(isLoading: false)
-        //        } catch {
-        //            await updateLoadingState(isLoading: false)
-        //            await updateErrorMessage(message: error.localizedDescription)
-        //        }
-//    }
     func fetchUsers(perPage: Int = 20, page: Int = 0) {
         self.isLoading = true
         let params = UserListRequest()

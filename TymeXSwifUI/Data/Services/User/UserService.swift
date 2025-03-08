@@ -14,9 +14,9 @@ protocol UserServiceProtocol {
     func fetchDetailUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
 }
 
-struct UserService: UserServiceProtocol {
+final class UserService: UserServiceProtocol {
     
-    let userRepository: UserRepository
+    private let userRepository: UserRepository
     
     init(userRepository: UserRepository) {
         self.userRepository = userRepository

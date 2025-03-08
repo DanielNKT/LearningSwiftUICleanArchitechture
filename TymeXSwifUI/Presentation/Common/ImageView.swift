@@ -77,6 +77,9 @@ struct CachedAsyncImage: View {
                     .onAppear {
                         loader.load(from: url)
                     }
+                    .onDisappear {
+                        loader.cancel()
+                    }
             }
         }
     }
