@@ -7,8 +7,9 @@
 import Foundation
 
 extension URLRequest {
-    mutating func addParameters(_ parameters: [String: Any], method: String) {
-            if method == "GET" {
+    mutating func addParameters(_ parameters: [String: Any]?, method: String) {
+        guard let parameters else { return }
+        if method == HTTPMethod.GET.rawValue {
                 guard var urlComponents = URLComponents(url: self.url!, resolvingAgainstBaseURL: false) else { return }
                 urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
                 self.url = urlComponents.url
@@ -20,7 +21,7 @@ extension URLRequest {
 }
 
 class Parameters {
-    func toDictionary() -> [String: Any] {
+    func toDictionary() -> [String: Any]? {
         var dict: [String: Any] = [:]
         let mirror = Mirror(reflecting: self)
         

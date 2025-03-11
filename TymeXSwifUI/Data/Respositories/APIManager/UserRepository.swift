@@ -8,9 +8,9 @@ import Foundation
 import Combine
 
 protocol UserRepositoryProtocol {
-    func listUsers(_ params: Parameters) async throws -> [User]
+    func listUsers(_ params: Parameters) async throws -> Users
     func getUser(name: String) async throws -> User
-    func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<[User], APIError>
+    func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<Users, APIError>
     func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
 }
 
@@ -30,7 +30,7 @@ class UserRepository: UserRepositoryProtocol {
         return apiRepository.request(endPoint: UserUrl.getUser(name: name))
     }
     
-    func listUsers(_ params: Parameters) async throws -> [User] {
+    func listUsers(_ params: Parameters) async throws -> Users {
         return try await apiRepository.request(endPoint: UserUrl.listUser(params))
     }
     
@@ -74,7 +74,7 @@ extension UserRepository.UserUrl: APIRequest {
     }
     
     var headers: [String : String]? {
-        return ["Accept": "application/json"]
+        return ["Accept": "application/json", "Authorization" : "token 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"]
     }
     
     func body() throws -> Data? {
