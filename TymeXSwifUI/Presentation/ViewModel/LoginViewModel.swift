@@ -17,23 +17,30 @@ class LoginViewModel: ObservableObject {
     
     var validationSubject = PassthroughSubject<(String, String), Never>()
     
+    private var cancellables = Set<AnyCancellable>()
+
+    
     init() {
         observeValidation()
     }
     
     func observeValidation() {
-        validationSubject
+        
+        Publishers.CombineLatest($username, $password)
             .map { [weak self] username, password in
                 guard let self = self else { return false }
+                self.passwordStrength = self.calculatePasswordStrength(password)
                 return self.isValidEmail(username) && self.passwordStrength >= 0.5
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: &$isLoginEnabled)
-        
-        $password
-            .map { self.calculatePasswordStrength($0) }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$passwordStrength)
+            .sink { [weak self] isEnabled in
+                self?.isLoginEnabled = isEnabled
+                if !isEnabled {
+                    self?.showError = false
+                }
+                
+            }
+            .store(in: &cancellables)
     }
     
     private func isValidEmail(_ email: String) -> Bool {
@@ -50,9 +57,10 @@ class LoginViewModel: ObservableObject {
     }
     
     func attemptLogin() {
-        if isLoginEnabled {
+        if self.username == "khanhtoan@gmail.com" && self.password == "12345678900"{
             successLogin = true
         } else {
+            successLogin = false
             showError = true
         }
     }

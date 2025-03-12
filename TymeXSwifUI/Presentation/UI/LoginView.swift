@@ -14,34 +14,25 @@ struct LoginView: View {
     @State private var shakeOffset: CGFloat = 0
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 24) {
             Label("Login", systemImage: "person.circle")
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
             
             TextField("Email", text: $viewModel.username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-                .onChange(of: viewModel.username) {
-                    viewModel.validationSubject.send((viewModel.username, viewModel.password))
-                }
 
             SecureField("Password", text: $viewModel.password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-                .onChange(of: viewModel.password) {
-                    viewModel.validationSubject.send((viewModel.username, viewModel.password))
-                }
 
             ProgressView(value: viewModel.passwordStrength)
                 .progressViewStyle(LinearProgressViewStyle())
                 .frame(width: 200)
-                .padding()
                 .tint(viewModel.passwordStrength > 0.7 ? .green : .red)
 
             Button("Login") {
                 viewModel.attemptLogin()
-                if !viewModel.isLoginEnabled {
+                if !viewModel.successLogin {
                     shakeButton()
                 } else {
                     appState.isLoggedIn = true
@@ -62,10 +53,6 @@ struct LoginView: View {
                     .foregroundColor(.red)
                     .font(.caption)
                     .transition(.opacity)
-            }
-            
-            if viewModel.successLogin {
-                coordinator.view(for: .home)
             }
         }
         .padding()
