@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct Home: View {
+    @EnvironmentObject var appState: AppState 
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var viewModel: HomeViewModel
     

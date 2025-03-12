@@ -24,6 +24,7 @@ class AppCoordinator: ObservableObject {
     enum DestinationType: Hashable {
         case home
         case detail(String)
+        case login
     }
 
     func push(_ destination: DestinationType) {
@@ -42,6 +43,9 @@ class AppCoordinator: ObservableObject {
         case .detail(let name):
             let viewModel = UserDetailViewModel(service: userService, userName: name)
             UserDetail(viewModel: viewModel)
+        case .login:
+            let viewModel = LoginViewModel()
+            LoginView(viewModel: viewModel)
         }
     }
 }

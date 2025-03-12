@@ -16,7 +16,6 @@ struct UserDetail: View {
     
     var body: some View {
         Group {
-            
             VStack {
                 if viewModel.isLoading {
                     loadingView()
