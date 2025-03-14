@@ -112,6 +112,7 @@ struct UserDetail: View {
                         Image(systemName: "arrow.left") // Custom icon
                             .font(.title)
                             .foregroundColor(.black)
+                            .imageScale(.small)
                     }
                     
                 }

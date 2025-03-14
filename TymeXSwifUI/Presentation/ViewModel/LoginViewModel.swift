@@ -57,7 +57,7 @@ class LoginViewModel: ObservableObject {
     }
     
     func attemptLogin() {
-        if self.username == "khanhtoan@gmail.com" && self.password == "12345678900"{
+        if self.username == "khanhtoan@gmail.com" && self.password == "1234567890"{
             successLogin = true
         } else {
             successLogin = false

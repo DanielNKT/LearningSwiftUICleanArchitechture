@@ -10,31 +10,36 @@ import SwiftUI
 // MARK: - App Coordinator
 class AppCoordinator: ObservableObject {
     @Published var path = NavigationPath()
-
+    
     // ✅ Shared dependencies (created once)
     private let apiRepository = APIRepository()
     private let userRepository: UserRepository
     private let userService: UserService
-
+    
     init() {
         self.userRepository = UserRepository(apiRepository: apiRepository)
         self.userService = UserService(userRepository: userRepository)
     }
-
+    
     enum DestinationType: Hashable {
         case home
         case detail(String)
         case login
+        case settings
     }
-
+    
     func push(_ destination: DestinationType) {
         path.append(destination)
     }
-
+    
     func pop() {
         path.removeLast()
     }
-
+    
+    func resetToLogin() {
+        path = NavigationPath() // Clears the navigation stack
+    }
+    
     @ViewBuilder func view(for destination: DestinationType) -> some View {
         switch destination {
         case .home:
@@ -46,6 +51,8 @@ class AppCoordinator: ObservableObject {
         case .login:
             let viewModel = LoginViewModel()
             LoginView(viewModel: viewModel)
+        case .settings:
+            SettingsView()
         }
     }
 }

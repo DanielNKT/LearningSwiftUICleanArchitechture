@@ -31,7 +31,7 @@ struct Home: View {
                     failedView(errorMessage)
                 } else {
                     ScrollView(.vertical) {
-                        LazyVStack {
+                        LazyVStack(spacing: 16) {
                             ForEach(viewModel.users, id: \.id) { user in
                                 UserRow(user: user).listRowSeparator(.hidden)
                                     .onTapGesture {
@@ -56,10 +56,24 @@ struct Home: View {
                             viewModel.fetchUsers()
                         }
                     }
-                    .contentMargins(8.0)
+                    .contentMargins(16.0)
                 }
             }
             .navigationTitle("Github Users")
+            .toolbar {
+                if appState.isLoggedIn {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            coordinator.push(.settings)
+                        }) {
+                            Image(systemName: "gearshape") // Custom icon
+                                .font(.title)
+                                .foregroundColor(.black)
+                                .imageScale(.small)
+                        }
+                    }
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
         }
     }
