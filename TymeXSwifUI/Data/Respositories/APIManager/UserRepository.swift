@@ -74,7 +74,8 @@ extension UserRepository.UserUrl: APIRequest {
     }
     
     var headers: [String : String]? {
-        return ["Accept": "application/json", "Authorization" : "token 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"]
+        //return ["Accept": "application/json", "Authorization" : "Your Template Token"]
+        return nil
     }
     
     func body() throws -> Data? {
