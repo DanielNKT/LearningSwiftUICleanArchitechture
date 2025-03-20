@@ -14,13 +14,19 @@ struct SettingsView: View {
     @State private var isSheetPresented: Bool = false
     
     var body: some View {
-        VStack(spacing: 12) {
+        List {
+            // Row 1: Display message
             Text(message)
+                .frame(maxWidth: .infinity, alignment: .leading)
             
+            // Row 2: Logout button
             Button("Logout") {
                 coordinator.resetToLogin()
                 appState.isLoggedIn = false
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // Row 3: Go to profile
             Button("Go to profile") {
                 isSheetPresented = true
             }
@@ -29,8 +35,10 @@ struct SettingsView: View {
                     message = newMessage
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        
+        // Make the list plain (optional)
+        .listStyle(.plain)
     }
 }
 
@@ -38,7 +46,7 @@ struct ChildView: View {
     @State private var tempMessage: String = ""
     var onSave: (String) -> Void
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         VStack(spacing: 16) {
             Text("You have entered: \(tempMessage)")
@@ -46,7 +54,7 @@ struct ChildView: View {
             TextField("Enter message", text: $tempMessage)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-
+            
             Button("Save & Dismiss") {
                 onSave(tempMessage) // Send data back
                 dismiss() // Close the sheet
