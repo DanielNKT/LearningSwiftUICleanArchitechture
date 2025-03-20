@@ -73,8 +73,8 @@ class APIRepositoryTests: XCTestCase {
                     XCTFail("Unexpected error: \(error)")
                 }
             }, receiveValue: { (user: User) in
-                XCTAssertEqual(user.id, 1)
-                XCTAssertEqual(user.login, "testUser")
+                XCTAssertEqual(user.id, 102)
+                XCTAssertEqual(user.login, "BrianTheCoder")
                 expectation.fulfill()
             })
             .store(in: &cancellables)
