@@ -4,10 +4,43 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>TymeXSwifUI.xcscheme_^#shared#^_</key>
+		<key>App-Production.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>App-Staging.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>App-UAT.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>TymeXSwifUI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>79DD83C92D75FBB800CF95AB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>79DD83D92D75FBB900CF95AB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>79DD83E32D75FBB900CF95AB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

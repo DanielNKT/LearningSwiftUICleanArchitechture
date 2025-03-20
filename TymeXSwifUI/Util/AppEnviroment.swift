@@ -7,7 +7,7 @@
 import Foundation
 
 struct AppEnviroment {
-    static let baseURL: String = "https://api.github.com"
+    static let baseURL: String = Bundle.main.infoDictionary?["BaseURL"] as? String ?? ""
 }
 
 class AppState: ObservableObject {

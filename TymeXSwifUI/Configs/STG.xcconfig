@@ -1,0 +1,13 @@
+//
+//  STG.xcconfig
+//  TymeXSwifUI
+//
+//  Created by Bé Gạo on 20/3/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// STG.xcconfig
+BASE_URL = https:/$()/api.github.com
+APP_NAME = STG
