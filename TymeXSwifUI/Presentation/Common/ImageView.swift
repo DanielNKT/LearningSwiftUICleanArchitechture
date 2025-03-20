@@ -8,9 +8,9 @@ import SwiftUI
 import Combine
 
 class ImageCache {
-    static let shared = NSCache<NSString, CacheEntry>()
+    static let shared = NSCache<NSString, AnyObject>()
     
-    class CacheEntry {
+    class CacheEntry: NSObject {
         let image: UIImage
         let timestamp: Date
         
@@ -23,33 +23,44 @@ class ImageCache {
 
 class ImageLoader: ObservableObject {
     @Published var image: UIImage?
-    private var cancellable: AnyCancellable?
-    private let cacheDuration: TimeInterval = 60 // 1 minute
-    
-    func load(from url: URL) {
+    private var cancellables = Set<AnyCancellable>()
+    var isCancelled: Bool {
+        cancellables.isEmpty
+    }
+    func load(from url: URL, cacheDuration: TimeInterval = 60) {
         let cacheKey = NSString(string: url.absoluteString)
         
-        if let cachedEntry = ImageCache.shared.object(forKey: cacheKey), Date().timeIntervalSince(cachedEntry.timestamp) < cacheDuration {
+        if let cachedEntry = ImageCache.shared.object(forKey: cacheKey) as? ImageCache.CacheEntry, Date().timeIntervalSince(cachedEntry.timestamp) < cacheDuration {
             image = cachedEntry.image
             return
             
         }
         
-        cancellable = URLSession.shared.dataTaskPublisher(for: url)
-            .map { UIImage(data: $0.data)}
-            .replaceError(with: nil)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] downloadedImage in
-                if let image = downloadedImage {
-                    let entry = ImageCache.CacheEntry(image: image, timestamp: Date())
-                    ImageCache.shared.setObject(entry, forKey: cacheKey)
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map { $0.data }
+            .tryMap { data in
+                guard let image = UIImage(data: data) else {
+                    throw URLError(.badServerResponse)
                 }
-                self?.image = downloadedImage
+                return image
             }
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Image loading failed: \(error.localizedDescription)")
+                }
+            }, receiveValue: { [weak self] downloadedImage in
+                guard let self = self else { return }
+                let entry = ImageCache.CacheEntry(image: downloadedImage, timestamp: Date())
+                ImageCache.shared.setObject(entry, forKey: cacheKey)
+                self.image = downloadedImage
+            })
+            .store(in: &cancellables)
         
     }
     func cancel() {
-        cancellable?.cancel()
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 }
 

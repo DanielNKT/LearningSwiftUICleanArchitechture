@@ -4,7 +4,7 @@
 //
 //  Created by Bé Gạo on 8/3/25.
 //
-import XCTest
+import Foundation
 import Combine
 @testable import TymeXSwifUI
 

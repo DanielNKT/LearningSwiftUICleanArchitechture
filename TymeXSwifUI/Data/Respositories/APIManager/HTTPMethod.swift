@@ -23,6 +23,7 @@ enum APIError: Equatable {
     case networkError(Error)
     case invalidRequest(Error)
     
+    // Implement Equatable protocol to compare error when writing UnitTest
     static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidURL, .invalidURL),
