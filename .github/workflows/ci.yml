@@ -1,0 +1,29 @@
+name: iOS CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v2
+        with:
+          xcode-version: '15.2'  # or '14.3', '13.4.1', etc.
+
+      - name: Build and test
+        run: |
+          xcodebuild \
+            -workspace TymeXSwiftUI.xcworkspace \
+            -scheme App-UAT \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            clean test
