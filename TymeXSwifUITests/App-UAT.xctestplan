@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "63CA7D86-1B45-45E5-9D39-FD32C6FBB3B2",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TymeXSwifUI.xcodeproj",
+        "identifier" : "79DD83E32D75FBB900CF95AB",
+        "name" : "TymeXSwifUIUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:TymeXSwifUI.xcodeproj",
+        "identifier" : "79DD83D92D75FBB900CF95AB",
+        "name" : "TymeXSwifUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
