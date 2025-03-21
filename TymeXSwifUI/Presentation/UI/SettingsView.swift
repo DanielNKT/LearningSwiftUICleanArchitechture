@@ -10,35 +10,75 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var coordinator: AppCoordinator
     
-    @State private var message: String = "Hello"
-    @State private var isSheetPresented: Bool = false
+    @State private var message: String = ""
+    @State private var isShowingPopup: Bool = false
     
     var body: some View {
-        List {
-            // Row 1: Display message
-            Text(message)
+        ZStack {
+            List {
+                // Row 1: Display message
+                Text(message)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Row 2: Logout button
+                Button("Logout") {
+                    coordinator.resetToLogin()
+                    appState.isLoggedIn = false
+                }
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
-            // Row 2: Logout button
-            Button("Logout") {
-                coordinator.resetToLogin()
-                appState.isLoggedIn = false
+                
+                // Row 3: Go to profile
+                Button("Go to profile") {
+                    isShowingPopup = true
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            // Make the list plain (optional)
+            .listStyle(.plain)
+            .allowsHitTesting(!isShowingPopup) 
             
-            // Row 3: Go to profile
-            Button("Go to profile") {
-                isSheetPresented = true
-            }
-            .sheet(isPresented: $isSheetPresented) {
-                ChildView { newMessage in
-                    message = newMessage
+            if isShowingPopup {
+                PopupView(isShowing: $isShowingPopup) { newMessage in
+                    self.message = newMessage
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            
         }
-        // Make the list plain (optional)
-        .listStyle(.plain)
+    }
+}
+
+struct PopupView: View {
+    @Binding var isShowing: Bool
+    @State private var tempMessage: String = ""
+    var onSave: (String) -> Void
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Enter Text")
+                .font(.headline)
+            
+            TextField("Type something...", text: $tempMessage)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            
+            Button("Submit") {
+                onSave(tempMessage)
+                isShowing = false
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        }
+        .frame(width: 300, height: 200)
+        .background(Color.white)
+        .cornerRadius(20)
+        .shadow(radius: 10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.gray, lineWidth: 1)
+        )
+        .padding()
     }
 }
 
@@ -63,4 +103,3 @@ struct ChildView: View {
         .padding()
     }
 }
-
