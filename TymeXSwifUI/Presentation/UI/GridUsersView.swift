@@ -25,40 +25,38 @@ struct GridUsersView: View {
     
     var body: some View {
         Group {
-            NavigationStack(path: $coordinator.path)  {
-                if viewModel.isLoading, viewModel.users.count == 0 {
-                    loadingView()
-                } else if let errorMessage = viewModel.errorMessage, viewModel.users.count == 0 {
-                    failedView(errorMessage)
-                } else {
-                    ScrollView(.vertical) {
-                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 16), count: 2), spacing: 16) {
-                            ForEach(viewModel.users, id: \.id) { user in
-                                PhotoCardView(user: user)
-                                    .onTapGesture {
-                                        coordinator.push(.detail(user.login ?? ""))
-                                    }
-                            }
-                            if viewModel.isLoading && viewModel.users.count > 0 {
-                                ProgressView().padding()
-                            }
+            if viewModel.isLoading, viewModel.users.count == 0 {
+                loadingView()
+            } else if let errorMessage = viewModel.errorMessage, viewModel.users.count == 0 {
+                failedView(errorMessage)
+            } else {
+                ScrollView(.vertical) {
+                    LazyVGrid(columns: Array(repeating: GridItem(spacing: 16), count: 2), spacing: 16) {
+                        ForEach(viewModel.users, id: \.id) { user in
+                            PhotoCardView(user: user)
+                                .onTapGesture {
+                                    coordinator.push(.detail(user.login ?? ""))
+                                }
                         }
-                        .scrollTargetLayout()
-                    }
-                    .listStyle(.plain)
-                    .scrollPosition(id: $activePhotoId, anchor: .bottomTrailing)
-                    .onChange(of: activePhotoId, { oldValue, newValue in
-                        if newValue == viewModel.lastUserId, !viewModel.isLoading {
-                            viewModel.fetchUsers()
-                        }
-                    })
-                    .onAppear {
-                        if viewModel.users.isEmpty {
-                            viewModel.fetchUsers()
+                        if viewModel.isLoading && viewModel.users.count > 0 {
+                            ProgressView().padding()
                         }
                     }
-                    .contentMargins(16.0)
+                    .scrollTargetLayout()
                 }
+                .listStyle(.plain)
+                .scrollPosition(id: $activePhotoId, anchor: .bottomTrailing)
+                .onChange(of: activePhotoId, { oldValue, newValue in
+                    if newValue == viewModel.lastUserId, !viewModel.isLoading {
+                        viewModel.fetchUsers()
+                    }
+                })
+                .onAppear {
+                    if viewModel.users.isEmpty {
+                        viewModel.fetchUsers()
+                    }
+                }
+                .contentMargins(16.0)
             }
         }
     }

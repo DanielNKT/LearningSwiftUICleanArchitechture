@@ -25,7 +25,6 @@ struct ListUsersView: View {
     
     var body: some View {
         Group {
-            NavigationStack(path: $coordinator.path)  {
                 if viewModel.isLoading, viewModel.users.count == 0 {
                     loadingView()
                 } else if let errorMessage = viewModel.errorMessage, viewModel.users.count == 0 {
@@ -59,7 +58,7 @@ struct ListUsersView: View {
                     }
                     .contentMargins(16.0)
                 }
-            }
+                        
         }
     }
 }

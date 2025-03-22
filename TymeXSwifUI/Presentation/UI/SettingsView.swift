@@ -17,7 +17,7 @@ struct SettingsView: View {
         ZStack {
             List {
                 // Row 1: Display message
-                Text(message)
+                Text("Message: \(message)")
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // Row 2: Logout button
@@ -28,10 +28,14 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // Row 3: Go to profile
-                Button("Go to profile") {
+                Button("Show popup edit message") {
                     isShowingPopup = true
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Button("Go to segment control view") {
+                    coordinator.push(.testSegmentControl)
+                }
             }
             // Make the list plain (optional)
             .listStyle(.plain)
@@ -42,7 +46,6 @@ struct SettingsView: View {
                     self.message = newMessage
                 }
             }
-            
         }
     }
 }
@@ -69,6 +72,7 @@ struct PopupView: View {
             .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(10)
+            
         }
         .frame(width: 300, height: 200)
         .background(Color.white)

@@ -26,6 +26,9 @@ class AppCoordinator: ObservableObject {
         case detail(String)
         case login
         case settings
+        case listUser
+        case gridUser
+        case testSegmentControl
     }
     
     func push(_ destination: DestinationType) {
@@ -53,6 +56,14 @@ class AppCoordinator: ObservableObject {
             LoginView(viewModel: viewModel)
         case .settings:
             SettingsView()
+        case .listUser:
+            let viewModel = HomeViewModel(service: userService)
+            ListUsersView(viewModel: viewModel)
+        case .gridUser:
+            let viewModel = HomeViewModel(service: userService)
+            GridUsersView(viewModel: viewModel)
+        case .testSegmentControl:
+            TestSegmentedView()
         }
     }
 }
