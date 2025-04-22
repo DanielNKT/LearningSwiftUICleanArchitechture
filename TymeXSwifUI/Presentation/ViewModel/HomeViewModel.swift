@@ -19,11 +19,11 @@ class HomeViewModel: ObservableObject {
     
     private var since: Int = 0
     
-    private let service: UserServiceProtocol
+    private let userUseCases: UserUseCases
     private var cancellables = Set<AnyCancellable>()
     
-    init(service: UserServiceProtocol) {
-        self.service = service
+    init(userUseCases: UserUseCases) {
+        self.userUseCases = userUseCases
     }
     
     func fetchUsers(perPage: Int = 20, page: Int = 0) {
@@ -33,7 +33,7 @@ class HomeViewModel: ObservableObject {
         params.since = self.since
         
         
-        service.fetchListUserReturnAnyPublisher(params: params)
+        userUseCases.fetchUser.execute(params: params)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self else { return }

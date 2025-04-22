@@ -14,11 +14,11 @@ class AppCoordinator: ObservableObject {
     // ✅ Shared dependencies (created once)
     private let apiRepository = APIRepository()
     private let userRepository: UserRepository
-    private let userService: UserService
+    private let userUseCases: UserUseCases
     
     init() {
         self.userRepository = UserRepository(apiRepository: apiRepository)
-        self.userService = UserService(userRepository: userRepository)
+        self.userUseCases = UserUseCases(userRepository: userRepository)
     }
     
     enum DestinationType: Hashable {
@@ -46,10 +46,10 @@ class AppCoordinator: ObservableObject {
     @ViewBuilder func view(for destination: DestinationType) -> some View {
         switch destination {
         case .home:
-            let viewModel = HomeViewModel(service: userService)
+            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
             Home(viewModel: viewModel)
         case .detail(let name):
-            let viewModel = UserDetailViewModel(service: userService, userName: name)
+            let viewModel = UserDetailViewModel(userUseCases: userUseCases, userName: name)
             UserDetail(viewModel: viewModel)
         case .login:
             let viewModel = LoginViewModel()
@@ -57,10 +57,10 @@ class AppCoordinator: ObservableObject {
         case .settings:
             SettingsView()
         case .listUser:
-            let viewModel = HomeViewModel(service: userService)
+            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
             ListUsersView(viewModel: viewModel)
         case .gridUser:
-            let viewModel = HomeViewModel(service: userService)
+            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
             GridUsersView(viewModel: viewModel)
         case .testSegmentControl:
             TestSegmentedView()

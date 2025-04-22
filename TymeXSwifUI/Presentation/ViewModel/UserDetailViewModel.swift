@@ -13,17 +13,17 @@ class UserDetailViewModel: ObservableObject {
     @Published var userName: String
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    private let service: UserServiceProtocol
+    private let userUseCases: UserUseCases
     private var cancellables = Set<AnyCancellable>()
     
-    init(service: UserServiceProtocol, userName: String) {
-        self.service = service
+    init(userUseCases: UserUseCases, userName: String) {
+        self.userUseCases = userUseCases
         self.userName = userName
     }
     
     func fetchUsers() {
         self.isLoading = true
-        service.fetchDetailUserReturnAnyPublisher(name: self.userName)
+        userUseCases.fetchDetailUser.execute(name: self.userName)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

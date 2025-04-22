@@ -7,13 +7,6 @@
 import Foundation
 import Combine
 
-protocol UserRepositoryProtocol {
-    func listUsers(_ params: Parameters) async throws -> Users
-    func getUser(name: String) async throws -> User
-    func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<Users, APIError>
-    func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
-}
-
 class UserRepository: UserRepositoryProtocol {
     
     private let apiRepository: APIRepository

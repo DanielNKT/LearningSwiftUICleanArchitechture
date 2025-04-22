@@ -36,6 +36,12 @@ struct SettingsView: View {
                 Button("Go to segment control view") {
                     coordinator.push(.testSegmentControl)
                 }
+                
+                Button("Test request") {
+                    Task {
+                        await fetchAll()
+                    }
+                }
             }
             // Make the list plain (optional)
             .listStyle(.plain)
@@ -47,6 +53,36 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+    
+    func fetchAll() async {
+        async let result1 = fetchData1()
+        async let result2 = fetchData2()
+        async let result3 = fetchData3()
+
+        do {
+            let (data1, data2, data3) = try await (result1, result2, result3)
+            print("All done: \(data1), \(data2), \(data3)")
+        } catch {
+            print("Error: \(error)")
+        }
+        
+    }
+
+    func fetchData1() async throws -> String {
+        // simulate a network call
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+        return "Data1"
+    }
+
+    func fetchData2() async throws -> String {
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+        return "Data2"
+    }
+
+    func fetchData3() async throws -> String {
+        try await Task.sleep(nanoseconds: 1_500_000_000)
+        return "Data3"
     }
 }
 

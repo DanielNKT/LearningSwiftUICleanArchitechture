@@ -24,12 +24,12 @@ public struct JSONLoader {
         }
     }
     
-//    static func decodeJSON<T: Decodable>(_ type: T, from fileName: String, in bundle: Bundle = .main) throws -> T {
-//        let data = try loadJSON(from: fileName, in: bundle)
-//        do {
-//            return try JSONDecoder().decode(T.self, from: data)
-//        } catch let error {
-//            throw JsonLoaderError.decodingError("Failed to decode \(fileName).json", error)
-//        }
-//    }
+    static func decodeJSON<T: Decodable>(_ type: T, from fileName: String, in bundle: Bundle = .main) throws -> T {
+        let data = try loadJSON(from: fileName, in: bundle)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch let error {
+            throw JsonLoaderError.decodingError("Failed to decode \(fileName).json", error)
+        }
+    }
 }
