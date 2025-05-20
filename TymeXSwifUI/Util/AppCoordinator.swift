@@ -29,6 +29,7 @@ class AppCoordinator: ObservableObject {
         case listUser
         case gridUser
         case testSegmentControl
+        case concurrentProgramming
     }
     
     func push(_ destination: DestinationType) {
@@ -64,6 +65,8 @@ class AppCoordinator: ObservableObject {
             GridUsersView(viewModel: viewModel)
         case .testSegmentControl:
             TestSegmentedView()
+        case .concurrentProgramming:
+            ConcurrentProgrammingView()
         }
     }
 }
