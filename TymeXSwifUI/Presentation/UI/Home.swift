@@ -26,6 +26,11 @@ public struct Home: View {
                 .tabItem {
                     Label("Grid", systemImage: "rectangle.grid.2x2")
                 }
+            
+            ListBooksView()
+                .tabItem {
+                    Label("Books", systemImage: "book.fill")
+                }
         }
         .navigationTitle("Github Users")
         .toolbar {

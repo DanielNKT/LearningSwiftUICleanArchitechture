@@ -213,14 +213,13 @@ struct SkillsPopupView: View {
             localSkills = tempSkills
         }
         .frame(width: 320)
-        .frame(minHeight: 300)
+        .frame(minHeight: 350)
         .background(Color(.systemBackground))
         .cornerRadius(20)
         .shadow(radius: 12)
         .padding()
     }
 }
-
 
 struct PopupView: View {
     @Binding var isShowing: Bool
