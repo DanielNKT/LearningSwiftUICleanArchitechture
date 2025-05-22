@@ -17,14 +17,9 @@ public struct Home: View {
     
     public var body: some View {
         TabView {
-            ListUsersView(viewModel: viewModel)
+            TestSegmentedView()
                 .tabItem {
-                    Label("List", systemImage: "list.dash")
-                }
-            
-            GridUsersView(viewModel: viewModel)
-                .tabItem {
-                    Label("Grid", systemImage: "rectangle.grid.2x2")
+                    Label("Users", systemImage: "list.dash")
                 }
             
             ListBooksView()

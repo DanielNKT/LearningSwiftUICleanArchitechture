@@ -12,6 +12,7 @@ struct BookCardView: View {
     var parentHorizontalPadding: CGFloat = 15
     var size: CGSize
     var isScrolled: (Bool) -> Void
+    
     /// Scroll animation properties
     @State private var scrollProperties: ScrollGeometry = .init(
         contentOffset: .zero,
@@ -21,6 +22,7 @@ struct BookCardView: View {
     )
     @State private var scrollPosition: ScrollPosition = .init()
     @State private var isPageScrolled: Bool = false
+    
     var body: some View {
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 15) {
@@ -218,6 +220,7 @@ struct BookCardView: View {
         .zIndex(1000)
     }
 }
+
 struct BookScrollEnd: ScrollTargetBehavior {
     var topInset: CGFloat
     func updateTarget(_ target: inout ScrollTarget, context: TargetContext) {
@@ -226,6 +229,7 @@ struct BookScrollEnd: ScrollTargetBehavior {
         }
     }
 }
+
 extension ScrollGeometry {
     var offsetY: CGFloat {
         contentOffset.y + contentInsets.top

@@ -8,6 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.white
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().backgroundColor = UIColor.systemBackground
+    }
+    
     @StateObject private var coordinator = AppCoordinator()
     @StateObject private var appState = AppState()
     

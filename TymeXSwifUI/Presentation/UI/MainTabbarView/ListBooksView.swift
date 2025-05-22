@@ -19,8 +19,8 @@ struct ListBooksView: View {
                         BookCardView(book: book, size: geometry.size) { isScrolled in
                             isAnyBookCardScrolled = isScrolled
                         }
-                            .frame(width: geometry.size.width - 30)
-                            .zIndex(activeID == book.id ? 1000 : 1)
+                        .frame(width: geometry.size.width - 30)
+                        .zIndex(activeID == book.id ? 1000 : 1)
                     }
                 }
                 .scrollTargetLayout()
