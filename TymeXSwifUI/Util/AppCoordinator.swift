@@ -28,7 +28,7 @@ class AppCoordinator: ObservableObject {
         case settings
         case listUser
         case gridUser
-        case testSegmentControl
+        case githubUsers
         case concurrentProgramming
     }
     
@@ -63,8 +63,8 @@ class AppCoordinator: ObservableObject {
         case .gridUser:
             let viewModel = HomeViewModel(userUseCases: self.userUseCases)
             GridUsersView(viewModel: viewModel)
-        case .testSegmentControl:
-            TestSegmentedView()
+        case .githubUsers:
+            GithubUsersView()
         case .concurrentProgramming:
             ConcurrentProgrammingView()
         }

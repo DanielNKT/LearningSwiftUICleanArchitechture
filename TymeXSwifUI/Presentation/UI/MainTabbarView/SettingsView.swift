@@ -109,7 +109,7 @@ extension SettingsView {
         Section(header: Text("Custom View").font(.headline)) {
             // Row 3: Go to segment control
             Button("Go to segment control view") {
-                coordinator.push(.testSegmentControl)
+                coordinator.push(.githubUsers)
             }
         }
         .listRowSeparator(.hidden)

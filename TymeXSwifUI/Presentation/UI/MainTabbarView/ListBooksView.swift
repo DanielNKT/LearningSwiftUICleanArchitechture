@@ -8,35 +8,31 @@
 import SwiftUI
 
 struct ListBooksView: View {
-    @State private var activeID: String? = books.first?.id
-    @State private var scrollPosition: ScrollPosition = .init(idType: String.self)
-    @State private var isAnyBookCardScrolled: Bool = false
+    
+    @ObservedObject var viewModel: ListBooksViewModel
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.horizontal) {
                 HStack(spacing: 4) {
                     ForEach(books) { book in
                         BookCardView(book: book, size: geometry.size) { isScrolled in
-                            isAnyBookCardScrolled = isScrolled
+                            viewModel.isAnyBookCardScrolled = isScrolled
                         }
                         .frame(width: geometry.size.width - 30)
-                        .zIndex(activeID == book.id ? 1000 : 1)
+                        .zIndex(viewModel.activeID == book.id ? 1000 : 1)
                     }
                 }
                 .scrollTargetLayout()
             }
             .safeAreaPadding(15)
             .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
-            .scrollPosition($scrollPosition)
-            .scrollDisabled(isAnyBookCardScrolled)
-            .onChange(of: scrollPosition.viewID(type: String.self)) { oldValue, newValue in
-                activeID = newValue
+            .scrollPosition($viewModel.scrollPosition)
+            .scrollDisabled(viewModel.isAnyBookCardScrolled)
+            .onChange(of: viewModel.scrollPosition.viewID(type: String.self)) { oldValue, newValue in
+                viewModel.activeID = newValue
             }
             .scrollIndicators(.hidden)
         }
     }
-}
-
-#Preview {
-    ListBooksView()
 }
