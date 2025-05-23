@@ -11,22 +11,21 @@ public struct Home: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var coordinator: AppCoordinator
     
+    @State private var selectedTab: Tab = .users
+    
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     public var body: some View {
-        TabView {
-            TestSegmentedView()
-                .tabItem {
-                    Label("Users", systemImage: "list.dash")
-                }
+        VStack(spacing: 0) {
+            tabContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            ListBooksView()
-                .tabItem {
-                    Label("Books", systemImage: "book.fill")
-                }
+            AnimationTabbarView(selectedTab: $selectedTab)
+                .padding(.bottom, 10)
         }
+        .ignoresSafeArea(edges: .bottom)
         .navigationTitle("Github Users")
         .toolbar {
             if appState.isLoggedIn {
@@ -43,5 +42,15 @@ public struct Home: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    @ViewBuilder
+    var tabContent: some View {
+        switch selectedTab {
+        case .users:
+            TestSegmentedView()
+        case .books:
+            ListBooksView()
+        }
     }
 }
