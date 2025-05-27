@@ -17,6 +17,14 @@ public struct Home: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
+    private var usersView: AnyView {
+        return AnyView(coordinator.view(for: .githubUsers))
+    }
+
+    private var booksView: AnyView {
+        return AnyView(coordinator.view(for: .listBook))
+    }
+    
     public var body: some View {
         VStack(spacing: 0) {
             tabContent
@@ -48,9 +56,9 @@ public struct Home: View {
     var tabContent: some View {
         switch selectedTab {
         case .users:
-            GithubUsersView()
+            usersView
         case .books:
-            ListBooksView(viewModel: ListBooksViewModel())
+            booksView
         }
     }
 }

@@ -7,37 +7,68 @@
 
 import SwiftUI
 
+/// Enum định nghĩa các segment
+enum UserSegment: String, CaseIterable, Hashable {
+    case list = "LIST"
+    case grid = "GRID"
+}
+
 struct GithubUsersView: View {
     @EnvironmentObject var coordinator: AppCoordinator
-    let segments: [String] = ["LIST", "GRID"]
-    @State private var currentSegment = "LIST"
 
-    // Keep both views alive
-    private var listView: AnyView {
-        return AnyView(coordinator.view(for: .listUser))
-    }
-
-    private var gridView: AnyView {
-        return AnyView(coordinator.view(for: .gridUser))
-    }
+    @ObservedObject var viewModel: GithubUsersViewModel
+    
+    @State private var listView: AnyView? = nil
+    @State private var gridView: AnyView? = nil
 
     var body: some View {
         VStack {
-            SegmentedView(segments: segments, selected: $currentSegment)
-                .padding(.top)
+            SegmentedView(
+                segments: UserSegment.allCases.map(\.rawValue),
+                selected: Binding<String>(
+                    get: { viewModel.currentSegment.rawValue },
+                    set: { raw in
+                        if let newSegment = UserSegment(rawValue: raw) {
+                            viewModel.currentSegment = newSegment
+                        }
+                    }
+                )
+            )
+            .padding(.top)
 
             Spacer(minLength: 16)
 
-            ZStack {
-                // Show both views, but control visibility
-                listView
-                    .opacity(currentSegment == "LIST" ? 1 : 0)
-                    .allowsHitTesting(currentSegment == "LIST")
+            cachedView
+        }
+        .onChange(of: viewModel.currentSegment) { oldSegment, newSegment in
+            cacheIfNeeded(for: newSegment)
+        }
+        .onAppear {
+            cacheIfNeeded(for: viewModel.currentSegment)
+        }
+    }
 
-                gridView
-                    .opacity(currentSegment == "GRID" ? 1 : 0)
-                    .allowsHitTesting(currentSegment == "GRID")
+    private var cachedView: some View {
+        switch viewModel.currentSegment {
+        case .list:
+            return listView ?? AnyView(EmptyView())
+        case .grid:
+            return gridView ?? AnyView(EmptyView())
+        }
+    }
+
+    private func cacheIfNeeded(for segment: UserSegment) {
+        switch segment {
+        case .list:
+            if listView == nil {
+                listView = AnyView(coordinator.view(for: .listUser))
+            }
+        case .grid:
+            if gridView == nil {
+                gridView = AnyView(coordinator.view(for: .gridUser))
             }
         }
     }
 }
+
+

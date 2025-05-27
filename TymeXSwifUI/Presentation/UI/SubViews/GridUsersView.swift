@@ -15,10 +15,6 @@ struct GridUsersView: View {
     @State var since: Int = 0
     @State var perPage: Int = 20
     
-    /// Pagination properties
-    @State private var activePhotoId: Int?
-    @State private var lastPhotoId: Int?
-    
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -45,8 +41,8 @@ struct GridUsersView: View {
                     .scrollTargetLayout()
                 }
                 .listStyle(.plain)
-                .scrollPosition(id: $activePhotoId, anchor: .bottomTrailing)
-                .onChange(of: activePhotoId, { oldValue, newValue in
+                .scrollPosition(id: $viewModel.activePhotoId, anchor: .bottomTrailing)
+                .onChange(of: viewModel.activePhotoId, { oldValue, newValue in
                     if newValue == viewModel.lastUserId, !viewModel.isLoading {
                         viewModel.fetchUsers()
                     }

@@ -14,9 +14,10 @@ class HomeViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     
     /// Pagination properties
-    @Published var activeUserId: Int?
-    @Published var lastUserId: Int?
-    
+    @Published var activePhotoId: Int? = nil
+        var lastUserId: Int? {
+            users.last?.id
+        }
     private var since: Int = 0
     
     private let userUseCases: UserUseCases
@@ -53,7 +54,7 @@ class HomeViewModel: ObservableObject {
                 }
                 
                 self.users.append(contentsOf: uniqueUsers)
-                self.lastUserId = users.last?.id
+//                self.lastUserId = users.last?.id
                 if self.since == 0 {
                     self.since = perPage + 1
                 } else {

@@ -15,50 +15,46 @@ struct ListUsersView: View {
     @State var since: Int = 0
     @State var perPage: Int = 20
     
-    /// Pagination properties
-    @State private var activePhotoId: Int?
-    @State private var lastPhotoId: Int?
-    
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         Group {
-                if viewModel.isLoading, viewModel.users.count == 0 {
-                    loadingView()
-                } else if let errorMessage = viewModel.errorMessage, viewModel.users.count == 0 {
-                    failedView(errorMessage)
-                } else {
-                    ScrollView(.vertical) {
-                        LazyVStack(spacing: 16) {
-                            ForEach(viewModel.users, id: \.id) { user in
-                                UserRow(user: user).listRowSeparator(.hidden)
-                                    .onTapGesture {
-                                        coordinator.push(.detail(user.login ?? ""))
-                                    }
-                            }
-                            if viewModel.isLoading && viewModel.users.count > 0 {
-                                ProgressView().padding()
-                            }
+            if viewModel.isLoading, viewModel.users.count == 0 {
+                loadingView()
+            } else if let errorMessage = viewModel.errorMessage, viewModel.users.count == 0 {
+                failedView(errorMessage)
+            } else {
+                ScrollView(.vertical) {
+                    LazyVStack(spacing: 16) {
+                        ForEach(viewModel.users, id: \.id) { user in
+                            UserRow(user: user).listRowSeparator(.hidden)
+                                .onTapGesture {
+                                    coordinator.push(.detail(user.login ?? ""))
+                                }
+                                .id(user.id)
                         }
-                        .scrollTargetLayout()
-                    }
-                    .listStyle(.plain)
-                    .scrollPosition(id: $activePhotoId, anchor: .bottomTrailing)
-                    .onChange(of: activePhotoId, { oldValue, newValue in
-                        if newValue == viewModel.lastUserId, !viewModel.isLoading {
-                            viewModel.fetchUsers()
-                        }
-                    })
-                    .onAppear {
-                        if viewModel.users.isEmpty {
-                            viewModel.fetchUsers()
+                        if viewModel.isLoading && viewModel.users.count > 0 {
+                            ProgressView().padding()
                         }
                     }
-                    .contentMargins(16.0)
+                    .scrollTargetLayout()
                 }
-                        
+                .listStyle(.plain)
+                .scrollPosition(id: $viewModel.activePhotoId, anchor: .bottomTrailing)
+                .onChange(of: viewModel.activePhotoId, { oldValue, newValue in
+                    if newValue == viewModel.lastUserId, !viewModel.isLoading {
+                        viewModel.fetchUsers()
+                    }
+                })
+                .onAppear {
+                    if viewModel.users.isEmpty {
+                        viewModel.fetchUsers()
+                    }
+                }
+                .contentMargins(16.0)
+            }
         }
     }
 }

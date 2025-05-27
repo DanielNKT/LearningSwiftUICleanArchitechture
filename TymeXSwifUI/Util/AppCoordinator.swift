@@ -10,17 +10,28 @@ import SwiftUI
 // MARK: - App Coordinator
 class AppCoordinator: ObservableObject {
     @Published var path = NavigationPath()
-    
-    // ✅ Shared dependencies (created once)
+
     private let apiRepository = APIRepository()
     private let userRepository: UserRepository
     private let userUseCases: UserUseCases
-    
+
+    // ✅ Cached view models
+    private var homeViewModel: HomeViewModel!
+    private var listViewModel: HomeViewModel!
+    private var gridViewModel: HomeViewModel!
+    private var listBooksViewModel: ListBooksViewModel!
+    private var githubUsersViewModel: GithubUsersViewModel!
+
     init() {
         self.userRepository = UserRepository(apiRepository: apiRepository)
         self.userUseCases = UserUseCases(userRepository: userRepository)
+        self.homeViewModel = HomeViewModel(userUseCases: userUseCases)
+        self.listViewModel = HomeViewModel(userUseCases: userUseCases)
+        self.gridViewModel = HomeViewModel(userUseCases: userUseCases)
+        self.listBooksViewModel = ListBooksViewModel()
+        self.githubUsersViewModel = GithubUsersViewModel()
     }
-    
+
     enum DestinationType: Hashable {
         case home
         case detail(String)
@@ -30,43 +41,45 @@ class AppCoordinator: ObservableObject {
         case gridUser
         case githubUsers
         case concurrentProgramming
+        case listBook
     }
-    
+
     func push(_ destination: DestinationType) {
         path.append(destination)
     }
-    
+
     func pop() {
         path.removeLast()
     }
-    
+
     func resetToLogin() {
-        path = NavigationPath() // Clears the navigation stack
+        path = NavigationPath()
     }
-    
-    @ViewBuilder func view(for destination: DestinationType) -> some View {
+
+    @ViewBuilder
+    func view(for destination: DestinationType) -> some View {
         switch destination {
         case .home:
-            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
-            Home(viewModel: viewModel)
+            Home(viewModel: homeViewModel)
         case .detail(let name):
-            let viewModel = UserDetailViewModel(userUseCases: userUseCases, userName: name)
-            UserDetail(viewModel: viewModel)
+            // Detail may not be reused – instantiate as needed
+            let detailViewModel = UserDetailViewModel(userUseCases: userUseCases, userName: name)
+            UserDetail(viewModel: detailViewModel)
         case .login:
-            let viewModel = LoginViewModel()
-            LoginView(viewModel: viewModel)
+            LoginView(viewModel: LoginViewModel())
         case .settings:
             SettingsView()
         case .listUser:
-            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
-            ListUsersView(viewModel: viewModel)
+            ListUsersView(viewModel: listViewModel)
         case .gridUser:
-            let viewModel = HomeViewModel(userUseCases: self.userUseCases)
-            GridUsersView(viewModel: viewModel)
+            GridUsersView(viewModel: gridViewModel)
         case .githubUsers:
-            GithubUsersView()
+            GithubUsersView(viewModel: githubUsersViewModel)
         case .concurrentProgramming:
             ConcurrentProgrammingView()
+        case .listBook:
+            ListBooksView(viewModel: listBooksViewModel)
         }
     }
 }
+

@@ -7,23 +7,6 @@
 
 import SwiftUI
 
-struct TestTab: View {
-    @State private var selectedTab: Tab = .users
-
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack {
-                Text("Selected tab: \(selectedTab)")
-                Spacer()
-            }
-
-            AnimationTabbarView(selectedTab: $selectedTab)
-                .padding(.bottom, 20)
-        }
-        .ignoresSafeArea(edges: .bottom) // Optional: extend tabbar into safe area
-    }
-}
-
 struct AnimationTabbarView: View {
     var tint: Color = Color.blue
     var inactiveTint: Color = Color.gray
@@ -98,7 +81,4 @@ struct TabItem: View {
         }
     }
     
-}
-#Preview {
-    TestTab()
 }
