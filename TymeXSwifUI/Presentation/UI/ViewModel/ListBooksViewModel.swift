@@ -11,5 +11,9 @@ class ListBooksViewModel: ObservableObject {
     @Published var activeID: String?
     @Published var scrollPosition = ScrollPosition(idType: String.self)
     @Published var isAnyBookCardScrolled = false
+    
+    init() {
+        print("[DEBUG] - ListBooksViewModel init")
+    }
 }
 

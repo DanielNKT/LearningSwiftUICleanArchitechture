@@ -56,9 +56,9 @@ public struct Home: View {
     var tabContent: some View {
         switch selectedTab {
         case .users:
-            usersView
+            coordinator.view(for: .githubUsers)
         case .books:
-            booksView
+            coordinator.view(for: .listBook)
         }
     }
 }

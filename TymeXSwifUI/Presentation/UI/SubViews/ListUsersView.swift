@@ -16,6 +16,7 @@ struct ListUsersView: View {
     @State var perPage: Int = 20
     
     init(viewModel: HomeViewModel) {
+        print("[DEBUG] --- ListUsersView init")
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
