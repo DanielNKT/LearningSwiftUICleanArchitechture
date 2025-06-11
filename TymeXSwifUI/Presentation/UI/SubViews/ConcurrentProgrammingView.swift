@@ -6,12 +6,49 @@
 //
 
 import SwiftUI
+import Combine
+import Foundation
 
 struct ConcurrentProgrammingView: View {
+    
+    
+    
     var body: some View {
         List {
             multipleRequestSection
         }
+        .onAppear {
+            test()
+        }
+    }
+    
+    func test() {
+        let shouldFail = false
+        
+        let cancellables = Just(())
+            .setFailureType(to: MyError.self)
+            .flatMap { _ -> AnyPublisher<String, MyError> in
+                if shouldFail {
+                    return Fail(error: MyError.somethingWentWrong)
+                        .eraseToAnyPublisher()
+                } else {
+                    return Just("Success!")
+                        .setFailureType(to: MyError.self)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .sink(
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("Complete without error")
+                    case .failure(let error):
+                        print("Failed with error \(error)")
+                    }
+                }, receiveValue: { value in
+                        print("Received value: \(value)")
+                }
+            )
     }
     
     private var multipleRequestSection: some View {
@@ -56,4 +93,8 @@ extension ConcurrentProgrammingView {
         try await Task.sleep(nanoseconds: 1_500_000_000)
         return "Data3"
     }
+}
+
+enum MyError: Error {
+    case somethingWentWrong
 }

@@ -26,13 +26,24 @@ public struct Home: View {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
-            tabContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        TabView {
+            coordinator.view(for: .githubUsers)
+                .tabItem {
+                    Label("Users", systemImage: "list.dash")
+                }
             
-            AnimationTabbarView(selectedTab: $selectedTab)
-                .padding(.bottom, 10)
+            coordinator.view(for: .listBook)
+                .tabItem {
+                    Label("Books", systemImage: "book.fill")
+                }
         }
+//        VStack(spacing: 0) {
+//            tabContent
+//                .frame(maxWidth: .infinity, maxHeight: .infinity)
+//            
+//            AnimationTabbarView(selectedTab: $selectedTab)
+//                .padding(.bottom, 10)
+//        }
         .ignoresSafeArea(edges: .bottom)
         .navigationTitle("Github Users")
         .toolbar {
