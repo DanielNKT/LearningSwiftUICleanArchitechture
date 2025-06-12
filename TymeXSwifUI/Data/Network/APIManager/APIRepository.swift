@@ -9,7 +9,7 @@ import Combine
 
 protocol APIRequest {
     var path: String { get }
-    var parameters: [String : Any]? { get }
+    var parameters: Parameters? { get }
     var method: String { get }
     var headers: [String: String]? { get }
     func body() throws -> Data?

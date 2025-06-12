@@ -40,10 +40,10 @@ extension UserRepository {
 }
 
 extension UserRepository.UserUrl: APIRequest {
-    var parameters: [String : Any]? {
+    var parameters: Parameters? {
         switch self {
         case .listUser(let request):
-            return request?.toDictionary()
+            return request
         case .getUser:
             return nil
         }
