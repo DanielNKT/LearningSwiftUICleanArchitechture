@@ -63,6 +63,9 @@ struct ConcurrentProgrammingView: View {
     }
 }
 
+enum ErrorType: Error {
+    case networkError
+}
 extension ConcurrentProgrammingView {
     func fetchAll() async {
         async let result1 = fetchData1()
@@ -75,7 +78,15 @@ extension ConcurrentProgrammingView {
         } catch {
             print("Error: \(error)")
         }
-        
+        do {
+            let data1 = try await result1
+            let data2 = try await result2
+            let data3 = try await result3
+            print("A: \(data1), \(data2), \(data3)")
+        }
+        catch {
+            print("Error: \(error)")
+        }
     }
     
     func fetchData1() async throws -> String {
@@ -86,7 +97,8 @@ extension ConcurrentProgrammingView {
     
     func fetchData2() async throws -> String {
         try await Task.sleep(nanoseconds: 2_000_000_000)
-        return "Data2"
+        throw ErrorType.networkError
+        //return "Data2"
     }
     
     func fetchData3() async throws -> String {

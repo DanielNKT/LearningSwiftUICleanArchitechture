@@ -15,6 +15,8 @@ struct MyResult {
 
 class SettingsViewModel: ObservableObject {
     
+    @Published var currentLanguage: LanguageSupport = LanguageManager.shared.currentLanguage == LanguageSupport.English.rawValue ? .English : .Vietnamese
+
     func fetchData(id: Int) async throws -> String {
         if id % 2 == 0 {
             return "Data for \(id)"

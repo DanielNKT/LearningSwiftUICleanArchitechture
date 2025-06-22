@@ -34,7 +34,7 @@ public struct Home: View {
             
             coordinator.view(for: .listBook)
                 .tabItem {
-                    Label("Books", systemImage: "book.fill")
+                    Label(LocalizableKey.books, systemImage: "book.fill")
                 }
         }
 //        VStack(spacing: 0) {

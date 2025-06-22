@@ -68,7 +68,7 @@ class AppCoordinator: ObservableObject {
         case .login:
             LoginView(viewModel: LoginViewModel())
         case .settings:
-            SettingsView()
+            SettingsView(viewModel: SettingsViewModel())
         case .listUser:
             ListUsersView(viewModel: listViewModel)
         case .gridUser:

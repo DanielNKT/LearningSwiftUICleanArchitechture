@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  TymeXSwifUI
+
+  Created by Bé Gạo on 21/6/25.
+  
+*/
+
+"books" = "Books";
+"login" = "Login";
+"skills" = "Skills";
+"email" = "Email";
+"password" = "Password";

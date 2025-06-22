@@ -10,6 +10,8 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var coordinator: AppCoordinator
 
+    @ObservedObject var viewModel: SettingsViewModel
+
     @State private var message: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isShowingSkillsPopup: Bool = false
@@ -21,8 +23,9 @@ struct SettingsView: View {
                 skillsSection
                 messageSection
                 customUISection
-                logoutSection
                 concurrentProgrammingSection
+                languageSection
+                logoutSection
             }
             .listStyle(.plain)
             
@@ -65,12 +68,12 @@ struct SettingsView: View {
 
 extension SettingsView {
     private var skillsSection: some View {
-        Section(header: Text("Skills").font(.headline)) {
+        Section(header: Text(LocalizableKey.skills).font(.headline)) {
             // Row 1: Message and edit message
             if skills.isEmpty {
                 Text("No skills yet.")
             } else {
-                TagsSelectionView(tags: skills)
+                TagsSelectionView(tags: skills, canCheck: true)
             }
             Button("Edit Skills") {
                 isShowingSkillsPopup = true
@@ -101,6 +104,25 @@ extension SettingsView {
                 coordinator.resetToLogin()
                 appState.isLoggedIn = false
             }
+        }
+        .listRowSeparator(.hidden)
+    }
+    
+    private var languageSection: some View {
+        Section(header: Text("Language").font(.headline)) {
+            // Row 2: Logout button
+            SegmentedView(
+                segments: LanguageSupport.allCases.map(\.rawValue),
+                selected: Binding<String>(
+                    get: { viewModel.currentLanguage.rawValue },
+                    set: { raw in
+                        if let newSegment = LanguageSupport(rawValue: raw) {
+                            viewModel.currentLanguage = newSegment
+                            LanguageManager.shared.currentLanguage = viewModel.currentLanguage.rawValue
+                        }
+                    }
+                )
+            )
         }
         .listRowSeparator(.hidden)
     }
@@ -280,5 +302,5 @@ struct ChildView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(viewModel: SettingsViewModel())
 }

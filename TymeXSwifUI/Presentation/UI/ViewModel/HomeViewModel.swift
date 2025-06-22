@@ -33,7 +33,6 @@ class HomeViewModel: ObservableObject {
         params.per_page = perPage
         params.since = self.since
         
-        
         userUseCases.fetchUser.execute(params: params)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in

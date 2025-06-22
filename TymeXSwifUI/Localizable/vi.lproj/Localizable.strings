@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  TymeXSwifUI
+
+  Created by Bé Gạo on 21/6/25.
+  
+*/
+
+"books" = "Sách";
+"login" = "Đăng Nhập";
+"skills" = "Kỹ năng";
+"email" = "Email";
+"password" = "Mật khẩu";
