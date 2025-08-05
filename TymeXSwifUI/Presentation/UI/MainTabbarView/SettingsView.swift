@@ -11,7 +11,8 @@ struct SettingsView: View {
     @EnvironmentObject var coordinator: AppCoordinator
 
     @ObservedObject var viewModel: SettingsViewModel
-
+    @State var testCurrentLanguage: LanguageSupport = LanguageManager.shared.currentLanguage == LanguageSupport.English.rawValue ? .English : .Vietnamese
+    
     @State private var message: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isShowingSkillsPopup: Bool = false
@@ -20,6 +21,7 @@ struct SettingsView: View {
     var body: some View {
         ZStack {
             List {
+                profileSection
                 skillsSection
                 messageSection
                 customUISection
@@ -67,8 +69,21 @@ struct SettingsView: View {
 }
 
 extension SettingsView {
+    private var profileSection: some View {
+        Section {
+            Button("Edit Profile") {
+                coordinator.push(.profile)
+            }
+        } header: {
+            Label("Profile", systemImage: "person")
+                        .font(.headline)                 // header text size
+                        .symbolRenderingMode(.hierarchical)
+        }
+        .listRowSeparator(.hidden)
+    }
+    
     private var skillsSection: some View {
-        Section(header: Text(LocalizableKey.skills).font(.headline)) {
+        Section {
             // Row 1: Message and edit message
             if skills.isEmpty {
                 Text("No skills yet.")
@@ -80,36 +95,46 @@ extension SettingsView {
             }
             .foregroundStyle(.blue)
             .frame(maxWidth: .infinity, alignment: .leading)
+        } header: {
+            Label(LocalizableKey.skills, systemImage: "bag")
+                .font(.headline)
+                .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }
     
     private var messageSection: some View {
-        Section(header: Text("Message").font(.headline)) {
-            // Row 1: Message and edit message
+        Section {
             Text("Message: \(message)")
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button("Show popup edit message") {
                 isShowingPopup = true
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        } header: {
+            Label("Message", systemImage: "rectangle.and.pencil.and.ellipsis")
+                .font(.headline)
+                .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }
     
     private var logoutSection: some View {
-        Section(header: Text("Logout").font(.headline)) {
-            // Row 2: Logout button
+        Section {
             Button("Logout") {
                 coordinator.resetToLogin()
                 appState.isLoggedIn = false
             }
+        } header: {
+            Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                .font(.headline)
+                .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }
     
     private var languageSection: some View {
-        Section(header: Text("Language").font(.headline)) {
+        Section {
             // Row 2: Logout button
             SegmentedView(
                 segments: LanguageSupport.allCases.map(\.rawValue),
@@ -123,26 +148,37 @@ extension SettingsView {
                     }
                 )
             )
+        } header: {
+            Label("Language", systemImage: "v.square")
+                .font(.headline)                 // header text size
+                .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }
     
     private var customUISection: some View {
-        Section(header: Text("Custom View").font(.headline)) {
-            // Row 3: Go to segment control
+        Section {
             Button("Go to segment control view") {
                 coordinator.push(.githubUsers)
             }
+        } header: {
+            Label("Custom View", systemImage: "macwindow.on.rectangle")
+                        .font(.headline)                 // header text size
+                        .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }
     
     private var concurrentProgrammingSection: some View {
-        Section(header: Text("Concurrent Programming").font(.headline)) {
-            // Row 3: Go to segment control
+        // Row 3: Go to segment control
+        Section {
             Button("Go to concurrent programming view") {
                 coordinator.push(.concurrentProgramming)
             }
+        } header: {
+            Label("Concurrent Programming", systemImage: "cpu")
+                        .font(.headline)                 // header text size
+                        .symbolRenderingMode(.hierarchical)
         }
         .listRowSeparator(.hidden)
     }

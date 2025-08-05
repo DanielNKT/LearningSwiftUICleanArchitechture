@@ -10,9 +10,7 @@ import Combine
 import Foundation
 
 struct ConcurrentProgrammingView: View {
-    
-    
-    
+
     var body: some View {
         List {
             multipleRequestSection
@@ -78,6 +76,7 @@ extension ConcurrentProgrammingView {
         } catch {
             print("Error: \(error)")
         }
+        
         do {
             let data1 = try await result1
             let data2 = try await result2

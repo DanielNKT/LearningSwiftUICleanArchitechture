@@ -42,6 +42,7 @@ class AppCoordinator: ObservableObject {
         case githubUsers
         case concurrentProgramming
         case listBook
+        case profile
     }
 
     func push(_ destination: DestinationType) {
@@ -64,7 +65,7 @@ class AppCoordinator: ObservableObject {
         case .detail(let name):
             // Detail may not be reused – instantiate as needed
             let detailViewModel = UserDetailViewModel(userUseCases: userUseCases, userName: name)
-            UserDetail(viewModel: detailViewModel)
+            UserDetailView(viewModel: detailViewModel)
         case .login:
             LoginView(viewModel: LoginViewModel())
         case .settings:
@@ -79,6 +80,8 @@ class AppCoordinator: ObservableObject {
             ConcurrentProgrammingView()
         case .listBook:
             ListBooksView(viewModel: listBooksViewModel)
+        case .profile:
+            ProfileView()
         }
     }
 }

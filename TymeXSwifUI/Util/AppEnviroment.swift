@@ -8,6 +8,7 @@ import Foundation
 
 struct AppEnviroment {
     static let baseURL: String = Bundle.main.infoDictionary?["BaseURL"] as? String ?? ""
+    static let isAlpha = true
 }
 
 class AppState: ObservableObject {

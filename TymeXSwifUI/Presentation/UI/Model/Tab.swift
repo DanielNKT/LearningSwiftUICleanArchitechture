@@ -24,3 +24,27 @@ enum Tab: String, CaseIterable {
         return Tab.allCases.firstIndex(of: self) ?? 0
     }
 }
+
+enum ProfileTab: String, CaseIterable, Identifiable {
+    case posts = "Posts"
+    case reels = "Reels"
+    case tags = "Tags"
+
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .posts: return "square.grid.3x3.fill"
+        case .reels: return "play.rectangle.on.rectangle.fill"
+        case .tags: return "person.crop.square.fill"
+        }
+    }
+
+    var title: String {
+        rawValue
+    }
+
+    var tabItem: TabbarItem {
+        TabbarItem(title: title, icon: icon)
+    }
+}

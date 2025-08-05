@@ -16,10 +16,16 @@ class UserRepository: UserRepositoryProtocol {
     }
     
     func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<[User], APIError> {
+        if AppEnviroment.isAlpha {
+            return returnMockUsersData()
+        }
         return apiRepository.request(endPoint: UserUrl.listUser(params))
     }
     
     func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {
+        if AppEnviroment.isAlpha {
+            return returnMockUserDetailData(name: name)
+        }
         return apiRepository.request(endPoint: UserUrl.getUser(name: name))
     }
     
@@ -74,6 +80,26 @@ extension UserRepository.UserUrl: APIRequest {
     func body() throws -> Data? {
         return nil
     }
+}
+
+extension UserRepository {
+    func returnMockUsersData() -> AnyPublisher<[User], APIError> {
+        Result {
+            let data = try JSONLoader.loadJSON(from: "Users") // returns Data
+            return try JSONDecoder().decode(Users.self, from: data)
+        }
+        .publisher
+        .mapError { _ in APIError.unexpectedResponse }
+        .eraseToAnyPublisher()
+    }
     
-    
+    func returnMockUserDetailData(name: String) -> AnyPublisher<User, APIError> {
+        Result {
+            let data = try JSONLoader.loadJSON(from: "UserDetail") // returns Data
+            return try JSONDecoder().decode(User.self, from: data)
+        }
+        .publisher
+        .mapError { _ in APIError.unexpectedResponse }
+        .eraseToAnyPublisher()
+    }
 }
