@@ -14,11 +14,8 @@ class LoginViewModel: ObservableObject {
     @Published var passwordStrength: Float = 0.0
     @Published var showError: Bool = false
     @Published var successLogin: Bool = false
-    
-    var validationSubject = PassthroughSubject<(String, String), Never>()
-    
+        
     private var cancellables = Set<AnyCancellable>()
-
     
     init() {
         observeValidation()

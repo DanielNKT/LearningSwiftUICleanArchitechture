@@ -7,9 +7,9 @@
 import Foundation
 
 extension URLRequest {
-    mutating func addParameters(_ parameters: Parameters?, method: String) {
+    mutating func addParameters(_ parameters: Parameters?, method: HTTPMethod) {
         guard let parameters, let dicParams = parameters.toDictionary() else { return }
-        if method == HTTPMethod.GET.rawValue {
+        if method == HTTPMethod.GET {
             guard var urlComponents = URLComponents(url: self.url!, resolvingAgainstBaseURL: false) else { return }
             urlComponents.queryItems = dicParams.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
             self.url = urlComponents.url

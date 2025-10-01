@@ -10,7 +10,7 @@ import Combine
 protocol APIRequest {
     var path: String { get }
     var parameters: Parameters? { get }
-    var method: String { get }
+    var method: HTTPMethod { get }
     var headers: [String: String]? { get }
     func body() throws -> Data?
 }
@@ -21,7 +21,7 @@ extension APIRequest {
             throw APIError.invalidURL
         }
         var request = URLRequest(url: url)
-        request.httpMethod = method
+        request.httpMethod = method.rawValue
         if let params = parameters {
             request.addParameters(params, method: method)
         }

@@ -19,33 +19,33 @@ class UserRepository: UserRepositoryProtocol {
         if AppEnviroment.isAlpha {
             return returnMockUsersData()
         }
-        return apiRepository.request(endPoint: UserUrl.listUser(params))
+        return apiRepository.request(endPoint: UserEndpoint.listUser(params))
     }
     
     func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {
         if AppEnviroment.isAlpha {
             return returnMockUserDetailData(name: name)
         }
-        return apiRepository.request(endPoint: UserUrl.getUser(name: name))
+        return apiRepository.request(endPoint: UserEndpoint.getUser(name: name))
     }
     
     func listUsers(_ params: Parameters) async throws -> Users {
-        return try await apiRepository.request(endPoint: UserUrl.listUser(params))
+        return try await apiRepository.request(endPoint: UserEndpoint.listUser(params))
     }
     
     func getUser(name: String) async throws -> User {
-        return try await apiRepository.request(endPoint: UserUrl.getUser(name: name))
+        return try await apiRepository.request(endPoint: UserEndpoint.getUser(name: name))
     }
 }
 
 extension UserRepository {
-    enum UserUrl {
+    enum UserEndpoint {
         case listUser(Parameters?)
         case getUser(name: String)
     }
 }
 
-extension UserRepository.UserUrl: APIRequest {
+extension UserRepository.UserEndpoint: APIRequest {
     var parameters: Parameters? {
         switch self {
         case .listUser(let request):
@@ -65,10 +65,10 @@ extension UserRepository.UserUrl: APIRequest {
         }
     }
     
-    var method: String {
+    var method: HTTPMethod {
         switch self {
         case .listUser, .getUser:
-            return HTTPMethod.GET.rawValue
+            return HTTPMethod.GET
         }
     }
     
