@@ -120,6 +120,121 @@ class APIRepository {
     }
 }
 
+extension APIRepository {
+    //This guarantees order (A → B → C). If one fails, it still continues.
+    func uploadMultipleSequential<T: Decodable>(
+      endPoint: APIRequest,
+      images: [Data],
+      fileNamePrefix: String = "photo",
+      mimeType: String = "image/jpeg",
+      formField: String = "file",
+      httpCodes: HTTPCodes = .success
+    ) async -> [UploadResult<T>] {
+        var results: [UploadResult<T>] = []
+        
+        for (index, data) in images.enumerated() {
+            do {
+                let response: T = try await upload(
+                    endPoint: endPoint,
+                    fileData: data,
+                    fileName: "\(fileNamePrefix)_\(UUID().uuidString).jpg",
+                    mimeType: mimeType,
+                formField: formField,
+                httpCodes: httpCodes)
+                results.append(UploadResult(index: index, response: response, error: nil))
+            } catch {
+                results.append(UploadResult(index: index, response: nil, error: error))
+            }
+        }
+        return results
+    }
+    
+    func uploadMultipleConcurrently<T: Decodable>(
+        endPoint: APIRequest,
+        images: [Data],
+        fileNamePrefix: String = "photo",
+        mimeType: String = "image/jpeg",
+        formField: String = "file",
+        httpCodes: HTTPCodes = .success
+    ) async -> [UploadResult<T>] {
+        await withTaskGroup(of: UploadResult<T>.self) { group in
+            for (index, data) in images.enumerated() {
+                group.addTask {
+                    do {
+                        let response: T = try await self.upload(
+                            endPoint: endPoint,
+                            fileData: data,
+                            fileName: "\(fileNamePrefix)_\(UUID().uuidString).jpg",
+                            mimeType: mimeType,
+                            formField: formField,
+                            httpCodes: httpCodes
+                        )
+                        return UploadResult(index: index, response: response, error: nil)
+                    } catch {
+                        return UploadResult(index: index, response: nil, error: error)
+                    }
+                }
+            }
+            
+            var results = Array<UploadResult<T>?>(repeating: nil, count: images.count)
+            for await result in group {
+                results[result.index] = result
+            }
+            return results.compactMap { $0 }
+        }
+    }
+    /// Upload 1 file/image via multipart/form
+    func upload<T: Decodable>(
+        endPoint: APIRequest,
+        fileData: Data,
+        fileName: String,
+        mimeType: String,
+        formField: String = "file", // Ex: "file" hoặc "image"
+        httpCodes: HTTPCodes = .success
+    ) async throws -> T {
+        
+        var request = try endPoint.urlRequest()
+        request.httpMethod = "POST"
+        
+        // Boundary
+        let boundary = "Boundary-\(UUID().uuidString)"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        // Body
+        var body = Data()
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"\(formField)\"; filename=\"\(fileName)\"\r\n")
+        body.append("Content-Type: \(mimeType)\r\n\r\n")
+        body.append(fileData)
+        body.append("\r\n")
+        body.append("--\(boundary)--\r\n")
+        
+        request.httpBody = body
+        
+        logRequest(request)
+        
+        // Call API
+        let (data, response) = try await session.data(for: request)
+        logResponse(response, data: data)
+        
+        guard let code = (response as? HTTPURLResponse)?.statusCode,
+              httpCodes.contains(code) else {
+            throw APIError.unexpectedResponse
+        }
+        
+        // 6. Decode response
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode(T.self, from: data)
+        } catch let err as DecodingError {
+            throw APIError.decodingError(err)
+        } catch {
+            throw APIError.unexpectedResponse
+        }
+    }
+}
+
 // MARK: - Logging Functions
 extension APIRepository {
     private func logRequest(_ request: URLRequest) {

@@ -40,7 +40,7 @@ class URLProtocolMock: URLProtocol {
 struct MockAPIRequest: APIRequest {
     var path: String { "/mock/user" }
     var parameters: Parameters? { nil }
-    var method: String { "GET" }
+    var method: HTTPMethod { .GET }
     var headers: [String: String]? { nil }
     func body() throws -> Data? { nil }
 }
