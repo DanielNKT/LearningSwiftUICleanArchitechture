@@ -23,7 +23,9 @@ class UserDetailViewModel: ObservableObject {
     
     func fetchUsers() {
         self.isLoading = true
-        userUseCases.fetchDetailUser.execute(name: self.userName)
+        let params = UserDetailRequest()
+        params.name = userName
+        userUseCases.fetchDetailUser.execute(params: params)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

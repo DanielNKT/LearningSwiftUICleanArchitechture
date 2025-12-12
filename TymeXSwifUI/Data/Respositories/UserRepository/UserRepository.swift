@@ -22,26 +22,26 @@ class UserRepository: UserRepositoryProtocol {
         return apiRepository.request(endPoint: UserEndpoint.listUser(params))
     }
     
-    func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {
+    func getUserReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<User, APIError> {
         if AppEnviroment.isAlpha {
-            return returnMockUserDetailData(name: name)
+            return returnMockUserDetailData()
         }
-        return apiRepository.request(endPoint: UserEndpoint.getUser(name: name))
+        return apiRepository.request(endPoint: UserEndpoint.getUser(params))
     }
     
     func listUsers(_ params: Parameters) async throws -> Users {
         return try await apiRepository.request(endPoint: UserEndpoint.listUser(params))
     }
     
-    func getUser(name: String) async throws -> User {
-        return try await apiRepository.request(endPoint: UserEndpoint.getUser(name: name))
+    func getUser(_ params: Parameters) async throws -> User {
+        return try await apiRepository.request(endPoint: UserEndpoint.getUser(params))
     }
 }
 
 extension UserRepository {
     enum UserEndpoint {
         case listUser(Parameters?)
-        case getUser(name: String)
+        case getUser(Parameters?)
     }
 }
 
@@ -50,8 +50,8 @@ extension UserRepository.UserEndpoint: APIRequest {
         switch self {
         case .listUser(let request):
             return request
-        case .getUser:
-            return nil
+        case .getUser(let request):
+            return request
         }
     }
     
@@ -60,8 +60,7 @@ extension UserRepository.UserEndpoint: APIRequest {
         case .listUser:
             return "/users"
         case .getUser(let name):
-            let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-            return "/users/\(encodedName ?? name)"
+            return "/users"
         }
     }
     
@@ -93,7 +92,7 @@ extension UserRepository {
         .eraseToAnyPublisher()
     }
     
-    func returnMockUserDetailData(name: String) -> AnyPublisher<User, APIError> {
+    func returnMockUserDetailData() -> AnyPublisher<User, APIError> {
         Result {
             let data = try JSONLoader.loadJSON(from: "UserDetail") // returns Data
             return try JSONDecoder().decode(User.self, from: data)

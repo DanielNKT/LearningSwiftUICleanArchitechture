@@ -10,3 +10,7 @@ class UserListRequest: Parameters {
     var per_page: Int = 20
     var since: Int = 0
 }
+
+class UserDetailRequest: Parameters {
+    var name: String?
+}

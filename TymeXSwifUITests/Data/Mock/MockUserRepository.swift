@@ -23,7 +23,7 @@ class MockUserRepository: UserRepositoryProtocol {
         throw APIError.unexpectedResponse
     }
 
-    func getUser(name: String) async throws -> User {
+    func getUser(_ params: Parameters) async throws -> User {
         if let result = getUserResult {
             return try result.get()
         }
@@ -34,7 +34,7 @@ class MockUserRepository: UserRepositoryProtocol {
         return listUsersPublisherResult ?? Fail(error: APIError.unexpectedResponse).eraseToAnyPublisher()
     }
 
-    func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError> {
+    func getUserReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<User, APIError> {
         return getUserPublisherResult ?? Fail(error: APIError.unexpectedResponse).eraseToAnyPublisher()
     }
 }

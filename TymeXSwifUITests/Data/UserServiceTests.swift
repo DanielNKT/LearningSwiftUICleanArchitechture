@@ -150,7 +150,9 @@ final class UserServiceTests: XCTestCase {
             let expectation = XCTestExpectation(description: "Publisher should return expected user")
             
             // When
-            userUseCases.fetchDetailUser.execute(name: "Test Login Name")
+            let params = UserDetailRequest()
+            params.name = "Test Login Name"
+            userUseCases.fetchDetailUser.execute(params: params)
                 .sink(receiveCompletion: { completion in
                     if case .failure(let error) = completion {
                         XCTFail("Expected success but got failure: \(error)")
@@ -176,7 +178,9 @@ final class UserServiceTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Publisher should return failure")
         
         // When
-        userUseCases.fetchDetailUser.execute(name: "Test Login Name")
+        let params = UserDetailRequest()
+        params.name = "Test Login Name"
+        userUseCases.fetchDetailUser.execute(params: params)
             .sink(receiveCompletion: { completion in
                 // Then
                 if case .failure(let error) = completion {

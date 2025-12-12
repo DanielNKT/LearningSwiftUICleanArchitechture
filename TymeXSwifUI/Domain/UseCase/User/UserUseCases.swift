@@ -26,8 +26,8 @@ final class FetchDetailUserUseCase {
         self.repository = repository
     }
     
-    func execute(name: String) -> AnyPublisher<User, APIError> {
-        return repository.getUserReturnAnyPublisher(name: name)
+    func execute(params: UserDetailRequest) -> AnyPublisher<User, APIError> {
+        return repository.getUserReturnAnyPublisher(params)
     }
 }
 

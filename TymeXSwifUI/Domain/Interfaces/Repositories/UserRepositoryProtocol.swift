@@ -9,7 +9,7 @@ import Combine
 
 protocol UserRepositoryProtocol {
     func listUsers(_ params: Parameters) async throws -> Users
-    func getUser(name: String) async throws -> User
+    func getUser(_ params: Parameters) async throws -> User
     func listUsersReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<Users, APIError>
-    func getUserReturnAnyPublisher(name: String) -> AnyPublisher<User, APIError>
+    func getUserReturnAnyPublisher(_ params: Parameters) -> AnyPublisher<User, APIError>
 }
