@@ -14,6 +14,7 @@ struct SettingsView: View {
     @State var testCurrentLanguage: LanguageSupport = LanguageManager.shared.currentLanguage == LanguageSupport.English.rawValue ? .English : .Vietnamese
     
     @State private var message: String = ""
+    @State private var selectedGender: Gender? = nil
     @State private var isShowingPopup: Bool = false
     @State private var isShowingSkillsPopup: Bool = false
     @State private var skills: [String] = ["C++", "Objective-C", "Swift", "SwiftUI", "Combine", "RxSwift"]
@@ -22,6 +23,7 @@ struct SettingsView: View {
         ZStack {
             List {
                 profileSection
+                dropdownSection
                 skillsSection
                 messageSection
                 customUISection
@@ -79,6 +81,38 @@ extension SettingsView {
                         .font(.headline)                 // header text size
                         .symbolRenderingMode(.hierarchical)
         }
+        .listRowSeparator(.hidden)
+    }
+    
+    private var dropdownSection: some View {
+        Section {
+            DropdownView(
+                title: "Select gender",
+                items: Gender.allCases,
+                selectedItem: $selectedGender
+            )
+            .transaction { transaction in
+                transaction.animation = nil
+            }
+            
+//            GroupBox {
+//                DisclosureGroup("Menu 1") {
+//                    Text("Item 1")
+//                    Text("Item 2")
+//                    Text("Item 3")
+//                }
+//            }
+        } header: {
+            if let gender = selectedGender {
+                Label("Gender: \(gender.rawValue)", systemImage: "person")
+                            .font(.headline)                 // header text size
+                            .symbolRenderingMode(.hierarchical)
+            } else {
+                Label("Please Select Gender", systemImage: "person")
+            }
+            
+        }
+        .id(selectedGender) 
         .listRowSeparator(.hidden)
     }
     

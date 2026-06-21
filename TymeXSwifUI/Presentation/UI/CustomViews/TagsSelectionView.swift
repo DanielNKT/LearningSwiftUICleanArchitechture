@@ -7,6 +7,56 @@
 
 import SwiftUI
 
+struct TagsSelectionView: View {
+    var tags: [String]
+    var selectedAll: Bool = false
+    var canCheck: Bool = false
+    
+    var didChangeSelection: (([String]) -> Void)? = nil
+    
+    var body: some View {
+            VStack {
+                TagsView(tags: tags, canCheck: canCheck, selectedAll: selectedAll, spacing: 4) { tag, isSelected in
+                    /// Your Custom View
+                    TagView(tag, isSelected: isSelected)
+                } didChangeSelection: { selection in
+                    print(selection)
+                    didChangeSelection?(selection)
+                }
+                .padding(10)
+                .background(.gray.opacity(0.1), in: .rect(cornerRadius: 20))
+            }
+    }
+    
+    /// Setup UI for Tag View
+    @ViewBuilder
+    func TagView(_ tag: String, isSelected: Bool) -> some View {
+        HStack(spacing: 10) {
+            Text(tag)
+                .font(.callout)
+                .foregroundStyle(isSelected ? .white : .primary)
+            
+            if isSelected {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.white)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background {
+            ZStack {
+                Capsule()
+                    .fill(.background)
+                    .opacity(!isSelected ? 1 : 0)
+                
+                Capsule()
+                    .fill(.green.gradient)
+                    .opacity(isSelected ? 1 : 0)
+            }
+        }
+    }
+}
+
 struct TagsView<Content: View, Tag: Equatable>: View where Tag: Hashable {
     var tags: [Tag]
     var canCheck: Bool = false
@@ -89,56 +139,6 @@ fileprivate struct CustomTagLayout: Layout {
             }
         }
         return origin.y
-    }
-}
-
-struct TagsSelectionView: View {
-    var tags: [String]
-    var selectedAll: Bool = false
-    var canCheck: Bool = false
-    
-    var didChangeSelection: (([String]) -> Void)? = nil
-    
-    var body: some View {
-            VStack {
-                TagsView(tags: tags, canCheck: canCheck, selectedAll: selectedAll, spacing: 4) { tag, isSelected in
-                    /// Your Custom View
-                    TagView(tag, isSelected: isSelected)
-                } didChangeSelection: { selection in
-                    print(selection)
-                    didChangeSelection?(selection)
-                }
-                .padding(10)
-                .background(.gray.opacity(0.1), in: .rect(cornerRadius: 20))
-            }
-    }
-    
-    /// Setup UI for Tag View
-    @ViewBuilder
-    func TagView(_ tag: String, isSelected: Bool) -> some View {
-        HStack(spacing: 10) {
-            Text(tag)
-                .font(.callout)
-                .foregroundStyle(isSelected ? .white : .primary)
-            
-            if isSelected {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.white)
-            }
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background {
-            ZStack {
-                Capsule()
-                    .fill(.background)
-                    .opacity(!isSelected ? 1 : 0)
-                
-                Capsule()
-                    .fill(.green.gradient)
-                    .opacity(isSelected ? 1 : 0)
-            }
-        }
     }
 }
 
