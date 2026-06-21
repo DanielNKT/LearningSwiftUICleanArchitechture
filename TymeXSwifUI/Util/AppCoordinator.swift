@@ -15,7 +15,7 @@ class AppCoordinator: ObservableObject {
     private let userRepository: UserRepository
     private let userUseCases: UserUseCases
 
-    // ✅ Cached view models
+    // ✅ Cached view models – mỗi view có ViewModel riêng để độc lập data/pagination
     private var homeViewModel: HomeViewModel!
     private var listViewModel: HomeViewModel!
     private var gridViewModel: HomeViewModel!

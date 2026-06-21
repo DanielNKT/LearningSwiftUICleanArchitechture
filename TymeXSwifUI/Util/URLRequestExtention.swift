@@ -14,7 +14,7 @@ extension URLRequest {
             urlComponents.queryItems = dicParams.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
             self.url = urlComponents.url
         } else {
-            self.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+            self.httpBody = try? JSONSerialization.data(withJSONObject: dicParams)
             self.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
     }

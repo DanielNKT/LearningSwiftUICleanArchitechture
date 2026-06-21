@@ -11,3 +11,4 @@
 // STG.xcconfig
 BASE_URL = https:/$()/api.github.com
 APP_NAME = STG
+IS_ALPHA = NO

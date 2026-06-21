@@ -11,3 +11,4 @@
 // PRD.xcconfig
 BASE_URL = https:/$()/api.github.com
 APP_NAME = PRD
+IS_ALPHA = NO

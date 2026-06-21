@@ -29,7 +29,7 @@ class HomeViewModel: ObservableObject {
     
     func fetchUsers(perPage: Int = 20, page: Int = 0) {
         self.isLoading = true
-        let params = UserListRequest()
+        var params = UserListRequest()
         params.per_page = perPage
         params.since = self.since
         

@@ -4,5 +4,7 @@
 <dict>
 	<key>BaseURL</key>
 	<string>$(BASE_URL)</string>
+	<key>IsAlpha</key>
+	<string>$(IS_ALPHA)</string>
 </dict>
 </plist>

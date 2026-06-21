@@ -10,13 +10,13 @@ public struct Home: View {
     @StateObject private var viewModel: HomeViewModel
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var coordinator: AppCoordinator
-    
+
     @State private var selectedTab: Tab = .users
-    
+
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     private var usersView: AnyView {
         return AnyView(coordinator.view(for: .githubUsers))
     }
